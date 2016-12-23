@@ -1,5 +1,3 @@
-Say hi to DBjson!
-
 <?php
 
 set_include_path('classes/');
