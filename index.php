@@ -1,5 +1,6 @@
-<?php
+Say hi!
 
+<?php
 
 set_include_path('classes/');
 spl_autoload($class);
