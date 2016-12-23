@@ -15,6 +15,7 @@ echo file_get_contents('test.html');
 
 $dbjson = new DBjson($config);
 $finder = new Finder;
+$finder->create();
 
 //$dbjson->testFinder();
 //$dbjson->testFilesystem();
