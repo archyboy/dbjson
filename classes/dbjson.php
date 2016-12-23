@@ -108,6 +108,59 @@ class dbjson {
         }
     }
 
+    public function insertDocument($data) {
+        $dir_array = $this->getCollection('list_array'); //array_diff(scandir($this->collection_dir, SCANDIR_SORT_DESCENDING), array('.', '..'));
+        if (!count($dir_array)) {
+            $this->document_id = hash('sha512', time());
+        } else {
+            $document_count = count($dir_array);
+            $document_next = hash('sha512', rand(0, 10000));
+            $this->document_id = $document_next;
+        }
+
+        if (!file_exists($this->collection_dir . DIRECTORY_SEPARATOR . $this->document_id)) {
+            if (!$filesize = file_put_contents($this->collection_dir . DIRECTORY_SEPARATOR . $this->document_id, $data)) {
+                $this->debug['fail'][] = 'Failed to create document';
+            } else {
+                $this->debug['success'][] = 'Document with index: ' . $this->document_id . ' created successfully!';
+                return $filesize;
+            }
+        } else {
+            $this->debug['warning'][] = 'Document ' . $this->document_id . ' already exists!';
+        }
+    }
+
+    public function deleteDocument($document_id) {
+        if (is_file($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
+            if (!unlink($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
+                $this->debug['fail'][] = 'Failed to delete document!';
+            } else {
+                $this->debug['success'][] = 'Document: ' . $document_id . ' deleted!';
+            }
+        } else {
+            $this->debug['warning'][] = 'Document: ' . $document_id . ' does not exsist!';
+        }
+    }
+
+    public function updateDocument($id, $json) {
+
+    }
+
+    public function getDocument($document_id) {
+        $filepath = $this->collection_dir . DIRECTORY_SEPARATOR . $document_id;
+        if (file_exists($filepath)) {
+            if (!$content = file_get_contents($filepath)) {
+                $this->debug['warning'][] = 'Document: ' . $document_id . ' is empty!';
+            } else {
+                $this->debug['success'][] = 'Document: ' . $document_id . ' retrieved!';
+
+                return $content;
+            }
+        } else {
+            $this->debug['fail'][] = 'Could not find document: ' . $document_id;
+        }
+    }
+
     public function getCollection($datatype = 'list_array') {
         switch ($datatype) {
             case 'list_array': {
@@ -116,6 +169,7 @@ class dbjson {
                     $finder->files()->in($this->collection_dir);
 
                     foreach ($finder as $files) {
+                        //echo $files->getRelativePathname();
                         $files_array[] = $files->getRelativePathname();
                     }
                     //Helper::print_pre($finder);
@@ -146,51 +200,48 @@ class dbjson {
         }
     }
 
-    public function insertDocument($json) {
-        $dir_array = $this->getCollection('list_array'); //array_diff(scandir($this->collection_dir, SCANDIR_SORT_DESCENDING), array('.', '..'));
-        if (!count($dir_array)) {
-            $this->document_id = 0;
-        } else {
-            $document_count = count($dir_array);
-            $document_next = $dir_array[0] + 1;
-            $this->document_id = $document_next;
+    public function getCollectionInfo() {
+        $finder = new Finder;
+        $iterator = $finder->files()->in($this->collection_dir);
+
+        $collection_array['info']['count'] = $iterator->count();
+
+        foreach ($iterator as $file) {
+            $collection_array['files']['realpath'][] = $file->getRealpath();
+            $collection_array['files']['filename'][] = $file->getFilename();
+            $collection_array['files']['pathname'][] = $file->getPathname();
+            $collection_array['files']['path'][] = $file->getPath();
+            $collection_array['files']['size'][] = $file->getSize();
+
+            //Helper::print_pre($file->getSize());
         }
 
-        if (!file_exists($this->collection_dir . DIRECTORY_SEPARATOR . $this->document_id)) {
-            if (!file_put_contents($this->collection_dir . DIRECTORY_SEPARATOR . $this->document_id, $json)) {
-                $this->debug['fail'][] = 'Failed to create document';
-            } else {
-                $this->debug['success'][] = 'Document with index: ' . $this->document_id . ' created successfully!';
-            }
-        } else {
-            $this->debug['warning'][] = 'Document ' . $this->document_id . ' already exists!';
-        }
+        //Helper::print_pre($collection_array);
+        return $collection_array;
     }
 
-    public function deleteDocument($document_id) {
-        if (is_file($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
-            if (!unlink($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
-                $this->debug['fail'][] = 'Failed to delete document!';
-            } else {
-                $this->debug['success'][] = 'Document: ' . $document_id . ' deleted!';
-            }
-        } else {
-            $this->debug['warning'][] = 'Document: ' . $document_id . ' does not exsist!';
+    public function getCollectionSize() {
+        $finder = new Finder;
+        $iterator = $finder->files()->in($this->collection_dir);
+
+        foreach ($iterator as $file) {
+            $collection_size += $file->getSize();
+
+            //Helper::print_pre($file->getSize());
         }
+        return $collection_size;
     }
 
-    public function updateDocument($id, $json) {
+    public function getAllCollectionsSize() {
+        $finder = new Finder;
+        $iterator = $finder->directories()->in($this->database_dir);
 
-    }
+        foreach ($iterator as $collection) {
+            $all_collections_size += $collection->getSize();
 
-    public function getDocument($document_id) {
-        if (!$content = file_get_contents($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
-            $this->debug['fail'][] = 'Failed to retrieve document: ' . $document_id;
-        } else {
-            $this->debug['success'][] = 'Document: ' . $document_id . ' retrieved!';
-
-            return $content;
+            //Helper::print_pre($file->getSize());
         }
+        return $all_collections_size;
     }
 
 }
