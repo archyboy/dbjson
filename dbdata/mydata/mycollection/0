@@ -1,0 +1,10 @@
+{
+      "firstname" : "Mr. Harley",
+      "lastname" : "Davidson",
+      "adress" : {
+        "street" : "Mc Gregor St. 543",
+        "postcode" : "345543",
+        "state" : "WE",
+        "country" : "United States Of Stupidoca"
+      }
+    }
