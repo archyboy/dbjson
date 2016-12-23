@@ -1,85 +1,88 @@
 <?php
 
-use Symfony\Component\Finder\Finder as Finder;
+ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
+
 
 set_include_path('classes/');
 spl_autoload($class);
 spl_autoload_extensions('.php');
 spl_autoload_register();
 
-//$testdb = new Test_DBjson($config);
-
 require 'vendor/autoload.php';
 
-echo file_get_contents('test.html');
-
 $dbjson = new DBjson($config);
-$finder = new Finder;
-$finder->create();
 
-//$dbjson->testFinder();
-//$dbjson->testFilesystem();
 
 $dbjson->installDB('dbdata');
 $dbjson->createDB('mydata');
-$dbjson->newCollection('mycollection');
+$dbjson->newCollection('testcollection');
 
 //$dbjson->dropDB('mydata');
 //$dbjson->removeCollection('mycollection');
 //$dbjson->deleteDocument(rand(1,500));
+//Helper::print_pre($dbjson->getCollection());
+//foreach ($collection_array as $key => $value) {
+//    echo '<br>Filename:' . $value;
+//}
 
-Helper::print_pre($dbjson->getCollection());
+$curl = curl_init();
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_URL, 'http://loripsum.net/api/1');
+$lorum_content_json = json_encode(curl_exec($curl));
+curl_close($curl);
 
-$collection_array = $dbjson->getCollection();
+//Helper::print_pre($lorum_content_json);
 
-$filename = $collection_array[0];
+for ($i = 0; $i < 100000; $i++) {
+    $dummy_json_objects_array[] = file_get_contents('templates/json/dummydata.json');
+}
+$dummy_json = json_encode($dummy_json_objects_array);
 
-echo 'Filename:' . $filename;
+//Helper::print_pre($dummy_json_objects_array);
+//die();
 
-//insert_test_data($dbjson);
-//$lorum_content_json = json_encode($content = file_get_contents('http://loripsum.net/api/1'));
-//$dbjson->insertDocument($lorum_content_json);
+function insert_test_data($dbjson, $data) {
+    do {
+        $database_insert_size_bytes += $dbjson->insertDocument(json_decode($data));
+        $database_insert_documents++;
+        //echo '<br>Database size: ' . number_format($database_insert_size_bytes, 2) . ' bytes<br>';
+    } while ($database_insert_size_bytes < 10000000000);
 
-function insert_test_data($dbjson) {
-    $database_size_bytes = Helper::dir_size('dbdata');
-    while ($database_size_bytes < 100000) {
-        //for($i=0; $i < 1000; $i) {
-        $dbjson->insertDocument('{
-      "firstname" : "Mr. Harley",
-      "lastname" : "Davidson",
-      "adress" : {
-        "street" : "Mc Gregor St. 543",
-        "postcode" : "345543",
-        "state" : "WE",
-        "country" : "United States Of Stupidoca"
-      }
-    }');
-        //}
-    }
+    return array(
+        'size' => $database_insert_size_bytes,
+        'documents' => $database_insert_documents
+    );
 }
 
-$database_size_kilobytes = $database_size_bytes / 1024;
-$database_size_megabytes = $database_size_kilobytes / 1000;
-$database_size_gigabytes = $database_size_megabytes / 1000;
-$database_size_terrabytes = $database_size_gigabytes / 1000;
+$database_insert_array = insert_test_data($dbjson, $dummy_json);
+$database_collection_info = $dbjson->getCollectionInfo();
 
-echo '<br>Database size: ' . number_format($database_size_bytes, 2) . ' bytes<br>';
+echo '<br>Inserted: ' . Helper::getNiceFileSize($database_insert_array['size']) . ' into collection';
+echo '<br>' . $database_insert_array['documents'] . ' new documents added to collection';
+echo '<br><br>';
+echo '<br>Total documents in collection: ' . $database_collection_info['info']['count'];
+echo '<br>Total collection size: ' . Helper::getNiceFileSize($dbjson->getCollectionSize());
+echo '<br><br>';
+echo '<br>All collections size: ' . Helper::getNiceFileSize($dbjson->getAllCollectionsSize());
 
-//$document_array = json_decode($document_json, true);
-//Helper::print_pre($document_array);
-//$document_json_contact = $dbjson->getDocument(3);
-//$document_json_lorum = $dbjson->getDocument(6);
-echo $document_json_contact;
-echo $document_json_lorum;
+
+//Helper::print_pre($database_insert_array);
+//$dbjson->insertDocument($lorum_content_json);
+
+$document_json_contact = $dbjson->getDocument('01ea601905f7df8805fa110c3611923834faec242ecfe5fb986bc26281c15bb907c99d12c89d6fb5f999bbe88f7c1cbfb93b46976c3553fa82773ed8cea87e52');
+
 
 $document_object = json_decode($document_json_contact);
-Helper::print_pre($document_object);
+//Helper::print_pre($document_object);
+echo '<p>';
 echo '<br>Firstname: ' . $document_object->firstname;
 echo '<br>Lastname: ' . $document_object->lastname;
 echo '<br>Street: ' . $document_object->adress->street;
 echo '<br>Postcode: ' . $document_object->adress->postcode;
 echo '<br>State: ' . $document_object->adress->state;
 echo '<br>Country: ' . $document_object->adress->country;
+echo '</p>';
 
 //$collection_array = $dbjson->getCollection();
 //Helper::print_pre($collection_array);
@@ -87,10 +90,12 @@ echo '<br>Country: ' . $document_object->adress->country;
 //Helper::print_pre($collection_files);
 //$collection_data_array = $dbjson->getCollection('data_array');
 //Helper::print_pre($collection_data_array);
-$collection_data_json = $dbjson->getCollection('data_json');
+//$collection_data_json = $dbjson->getCollection('data_json');
 //Helper::print_pre($collection_data_json);
 //$collection_data_json_decoded = json_decode($dbjson->getCollection('data_json'));
 //Helper::print_pre($collection_data_json_decoded);
 //Helper::print_pre($lorum_content);
+//Helper::print_pre($dbjson);
 
-Helper::print_pre($dbjson);
+
+
