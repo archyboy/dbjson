@@ -1,4 +1,4 @@
-Say hi!
+Say hi to DBjson!
 
 <?php
 
