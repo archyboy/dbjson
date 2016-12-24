@@ -4,17 +4,16 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
-class dbjson {
+class DBjson {
 
     public $config;
-    public $dbjson_dir = '';
-    public $database_dir = '';
-    public $collection_dir = '';
-    public $document_id = '';
+    public $dbjson_dir;
+    public $database_dir;
+    public $collection_dir;
+    //public $document_id;
     public $debug = array();
 
-    public function __construct($config) {
-
+    public function __construct() {
         $this->config = $config;
     }
 
@@ -110,24 +109,26 @@ class dbjson {
 
     public function insertDocument($data) {
         $dir_array = $this->getCollection('list_array'); //array_diff(scandir($this->collection_dir, SCANDIR_SORT_DESCENDING), array('.', '..'));
+        //Helper::print_pre($dir_array);
+        $document_id = uniqid(microtime(), true);
         if (!count($dir_array)) {
-            $this->document_id = hash('sha512', time());
+            $this->debug['notice']['initial_document'][] = $document_id;
         } else {
-            $document_count = count($dir_array);
-            $document_next = hash('sha512', rand(0, 10000));
-            $this->document_id = $document_next;
+            $this->debug['notice']['adding_document'][] = $document_id;
         }
 
-        if (!file_exists($this->collection_dir . DIRECTORY_SEPARATOR . $this->document_id)) {
-            if (!$filesize = file_put_contents($this->collection_dir . DIRECTORY_SEPARATOR . $this->document_id, $data)) {
-                $this->debug['fail'][] = 'Failed to create document';
+        if (!file_exists($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
+            if (!$filesize = file_put_contents($this->collection_dir . DIRECTORY_SEPARATOR . $document_id, $data)) {
+                $this->debug['fail']['write_error'][] = $document_id;
             } else {
-                $this->debug['success'][] = 'Document with index: ' . $this->document_id . ' created successfully!';
-                return $filesize;
+                $this->debug['success']['unique_id'][] = $document_id;
+                //return $filesize;
             }
         } else {
-            $this->debug['warning'][] = 'Document ' . $this->document_id . ' already exists!';
+            $this->debug['warning']['duplicat_id'][] = $document_id;
+            $this->debug['fixing']['duplicat_id'][] = $this->insertDocument($data); // If duplicat document_id then loop back until unique
         }
+        return $document_id;
     }
 
     public function deleteDocument($document_id) {
@@ -200,9 +201,9 @@ class dbjson {
         }
     }
 
-    public function getCollectionInfo() {
+    public function getCollectionInfo($collection_dir) {
         $finder = new Finder;
-        $iterator = $finder->files()->in($this->collection_dir);
+        $iterator = $finder->files()->in($collection_dir);
 
         $collection_array['info']['count'] = $iterator->count();
 
@@ -220,9 +221,9 @@ class dbjson {
         return $collection_array;
     }
 
-    public function getCollectionSize() {
+    public function getCollectionSize($collection_dir) {
         $finder = new Finder;
-        $iterator = $finder->files()->in($this->collection_dir);
+        $iterator = $finder->files()->in($collection_dir);
 
         foreach ($iterator as $file) {
             $collection_size += $file->getSize();
@@ -232,16 +233,19 @@ class dbjson {
         return $collection_size;
     }
 
-    public function getAllCollectionsSize() {
+    public function getAllCollectionsSize($database_dir) {
         $finder = new Finder;
-        $iterator = $finder->directories()->in($this->database_dir);
+        $iterator = $finder->directories()->in($database_dir);
+
+        //Helper::print_pre($iterator);
 
         foreach ($iterator as $collection) {
-            $all_collections_size += $collection->getSize();
-
-            //Helper::print_pre($file->getSize());
+            $size += $this->getCollectionSize($collection->getRealPath());
+            //echo '<br>' . $collection->getBasename();
+            //echo '<br>' . Helper::getNiceFileSize($size = $collection->getSize());
+            //Helper::print_pre($collection);
         }
-        return $all_collections_size;
+        return $size;
     }
 
 }
