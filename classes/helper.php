@@ -8,20 +8,21 @@ class Helper {
         echo '</pre>';
     }
 
-    public static function print_array($data) {
-        echo '<pre>';
-        foreach ($data as $key => $value) {
-
-            echo PHP_EOL . $key . '=>';
-            foreach ($value as $key => $value) {
-                echo PHP_EOL . $key . '=>';
-                foreach ($value as $key => $value) {
-                    echo PHP_EOL . '=>' . $value;
-                }
-            }
-        }
-        echo '</pre>';
-    }
+    /*
+      public static function print_array($data) {
+      echo '<pre>';
+      foreach ($data as $key => $value) {
+      echo PHP_EOL . $key . '=>';
+      foreach ($value as $key => $value) {
+      echo PHP_EOL . $key . '=>';
+      foreach ($value as $key => $value) {
+      echo PHP_EOL . '=>' . $value;
+      }
+      }
+      }
+      echo '</pre>';
+      }
+     */
 
     public static function myecho($data) {
         $view = new \System\View(parent::$config->TEMPLATE_SYSTEM_DIRECTORY . 't_output.php');
@@ -33,12 +34,14 @@ class Helper {
         $it = new RecursiveDirectoryIterator($dir);
         $it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($it as $file) {
-            if ('.' === $file->getBasename() || '..' === $file->getBasename())
+            if ('.' === $file->getBasename() || '..' === $file->getBasename()) {
                 continue;
-            if ($file->isDir())
+            }
+            if ($file->isDir()) {
                 rmdir($file->getPathname());
-            else
+            } else {
                 unlink($file->getPathname());
+            }
         }
         return rmdir($dir);
     }
@@ -67,6 +70,17 @@ class Helper {
             $fileSize /= 1024;
         }
         return round($fileSize, $digits) . " " . $sizes[$total];
+    }
+
+    public static function getJSONLoripsum($count) {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_URL, 'http://loripsum.net/api/' . $count);
+        $loripsum_content_json = json_encode(curl_exec($curl));
+        curl_close($curl);
+
+        //Helper::print_pre($lorum_content_json);
+        return $loripsum_content_json;
     }
 
 }
