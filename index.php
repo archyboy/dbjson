@@ -15,8 +15,6 @@ try {
     $dbjson = new DBjson();
     $dbjson->getDocument('4234');
 
-
-
 //$dbjson->install('dbdata2');
     $dbjson->createDB('mydata');
 //$dbjson->newCollection('sweetercollection');

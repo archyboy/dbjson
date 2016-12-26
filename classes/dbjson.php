@@ -44,41 +44,44 @@ class DBjson {
         }
     }
 
-    public function installDB($dbjson_dir) {
+    public function install($dbjson_dir) {
         $this->dbjson_dir = $dbjson_dir;
         if (!file_exists($this->dbjson_dir)) {
             if (!mkdir($this->dbjson_dir, 0777, true)) {
-                $this->debug['fail'][] = 'Failed to create default DBjson directory';
+                $this->debug['fail']['filesystem']['create']['directory'][] = $this->dbjson_dir;
             } else {
-                $this->debug['success'][] = 'Success creating directory: ' . $this->dbjson_dir;
+                $this->debug['success']['filesystem']['create']['directory'][] = $this->dbjson_dir;
             }
         } else {
-            $this->debug['warning'][] = 'DBjson is already installed!';
+            $this->debug['warning']['filesystem']['duplicate']['directory'][] = $this->dbjson_dir;
         }
     }
 
     public function createDB($database_name) {
         $this->database_dir = $this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name;
+        $filesystem = new Filesystem;
+
         if (!file_exists($this->database_dir)) {
-            if (!mkdir($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name, 0777, true)) {
-                $this->debug['fail'][] = 'Failed to create database directory';
+            throw new Exception('Error at line:');
+            if (!$filesystem->mkdir($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name, 0777)) {
+                $this->debug['fail']['database']['write_error'][] = $database_name;
             } else {
-                $this->debug['success'][] = 'Database: ' . $database_name . ' created successfully!';
+                $this->debug['success']['database']['create'][] = $database_name;
             }
         } else {
-            $this->debug['warning'][] = 'Database ' . $database_name . ' already exists!';
+            $this->debug['warning']['database']['duplicate'][] = $database_name;
         }
     }
 
     public function dropDB($database_name) {
         if (is_dir($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name)) {
             if (!Helper::rmdir_recursive($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name)) {
-                $this->debug['fail'][] = 'Failed to drop database!';
+                $this->debug['fail']['database']['drop'][] = $database_name;
             } else {
-                $this->debug['success'][] = 'Database: ' . $database_name . ' dropped!';
+                $this->debug['success']['database']['drop'][] = $database_name;
             }
         } else {
-            $this->debug['warning'][] = 'Database: ' . $database_name . ' does not exsist!';
+            $this->debug['warning']['database']['not_found'][] = $database_name;
         }
     }
 
@@ -86,24 +89,24 @@ class DBjson {
         $this->collection_dir = $this->database_dir . DIRECTORY_SEPARATOR . $collection_name;
         if (!file_exists($this->collection_dir)) {
             if (!mkdir($this->collection_dir, 0777, true)) {
-                $this->debug['fail'][] = 'Failed to create collection directory';
+                $this->debug['fail']['collection']['write_error'][] = $collection_name;
             } else {
-                $this->debug['success'][] = 'Collection: ' . $collection_name . ' created successfully!';
+                $this->debug['success']['collection']['create'][] = $collection_name;
             }
         } else {
-            $this->debug['warning'][] = 'Collection ' . $collection_name . ' already exists!';
+            $this->debug['warning']['collection']['duplicate'][] = $collection_name;
         }
     }
 
     public function removeCollection($collection_name) {
         if (is_dir($this->database_dir . DIRECTORY_SEPARATOR . $collection_name)) {
             if (!Helper::rmdir_recursive($this->database_dir . DIRECTORY_SEPARATOR . $collection_name)) {
-                $this->debug['fail'][] = 'Failed to remove collection!';
+                $this->debug['fail']['collection']['remove'][] = $collection_name;
             } else {
-                $this->debug['success'][] = 'Collection: ' . $collection_name . ' removed!';
+                $this->debug['success']['collection']['remove'][] = $collection_name;
             }
         } else {
-            $this->debug['warning'][] = 'Collection: ' . $collection_name . ' does not exsist!';
+            $this->debug['warning']['collection']['not_found'][] = $collection_name;
         }
     }
 
@@ -112,34 +115,38 @@ class DBjson {
         //Helper::print_pre($dir_array);
         $document_id = uniqid(microtime(), true);
         if (!count($dir_array)) {
-            $this->debug['notice']['initial_document'][] = $document_id;
+            $this->debug['notice']['document']['initial'][] = $document_id;
         } else {
-            $this->debug['notice']['adding_document'][] = $document_id;
+            $this->debug['notice']['document']['new'][] = $document_id;
         }
 
         if (!file_exists($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
             if (!$filesize = file_put_contents($this->collection_dir . DIRECTORY_SEPARATOR . $document_id, $data)) {
-                $this->debug['fail']['write_error'][] = $document_id;
+                $this->debug['fail']['document']['write_error'][] = $document_id;
             } else {
-                $this->debug['success']['unique_id'][] = $document_id;
+                $this->debug['success']['document']['unique'][] = $document_id;
                 //return $filesize;
             }
         } else {
-            $this->debug['warning']['duplicat_id'][] = $document_id;
-            $this->debug['fixing']['duplicat_id'][] = $this->insertDocument($data); // If duplicat document_id then loop back until unique
+            $this->debug['warning']['document']['duplicate'][] = $document_id;
+            $this->debug['fixing']['document']['duplicated'][] = $this->insertDocument($data); // If duplicat document_id then loop back until unique
         }
+
+
+        $insert_info = array(
+        );
         return $document_id;
     }
 
     public function deleteDocument($document_id) {
         if (is_file($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
             if (!unlink($this->collection_dir . DIRECTORY_SEPARATOR . $document_id)) {
-                $this->debug['fail'][] = 'Failed to delete document!';
+                $this->debug['fail']['document']['delete'][] = $document_id;
             } else {
-                $this->debug['success'][] = 'Document: ' . $document_id . ' deleted!';
+                $this->debug['success']['document']['delete'][] = $document_id;
             }
         } else {
-            $this->debug['warning'][] = 'Document: ' . $document_id . ' does not exsist!';
+            $this->debug['fail']['document']['not_found'][] = $document_id;
         }
     }
 
@@ -151,14 +158,14 @@ class DBjson {
         $filepath = $this->collection_dir . DIRECTORY_SEPARATOR . $document_id;
         if (file_exists($filepath)) {
             if (!$content = file_get_contents($filepath)) {
-                $this->debug['warning'][] = 'Document: ' . $document_id . ' is empty!';
+                $this->debug['warning']['document']['empty'] = $document_id;
             } else {
-                $this->debug['success'][] = 'Document: ' . $document_id . ' retrieved!';
+                $this->debug['success']['document']['retrieved'] = $document_id;
 
                 return $content;
             }
         } else {
-            $this->debug['fail'][] = 'Could not find document: ' . $document_id;
+            $this->debug['fail']['document']['not_found'][] = $document_id;
         }
     }
 
