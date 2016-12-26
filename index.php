@@ -11,68 +11,71 @@ spl_autoload_register();
 
 require 'vendor/autoload.php';
 
-$dbjson = new DBjson();
+try {
+    $dbjson = new DBjson();
+    $dbjson->getDocument('4234');
 
-$dbjson->installDB('dbdata');
-$dbjson->createDB('mydata');
-$dbjson->newCollection('sweetercollection');
 
+
+//$dbjson->install('dbdata2');
+    $dbjson->createDB('mydata');
+//$dbjson->newCollection('sweetercollection');
 //$dbjson->dropDB('mydata');
-//$dbjson->removeCollection('mycollection');
+//$dbjson->removeCollection('sweetercollection');
+//$dbjson->createDB('mydata');
+//$dbjson->newCollection('sweetercollection');
 //$dbjson->deleteDocument(rand(1,500));
-//Helper::print_pre($dbjson->getCollection());
-//foreach ($collection_array as $key => $value) {
-//    echo '<br>Filename:' . $value;
-//}
+//
+// Setting up a test environment
+    Helper::print_pre($dbjson->debug);
+    die();
+    $test_dbjson = new Test_DBjson;
+
+    $dummy_template = file_get_contents('templates/json/dummydata.json') . PHP_EOL;
+    $dummy_object = json_decode($dummy_template);
+
+    echo $dummy_template;
+    Helper::print_pre($dummy_object);
+
+    for ($i = 0; $i < 10; $i++) {
+        $dummy_objects_array[] = $dummy_object;
+    }
+
+    Helper::print_pre($dummy_objects_array);
+
+    $dummy_json = json_encode($dummy_objects_array);
+    $insert_dummy_json = $test_dbjson->insert_test_data($dbjson, $dummy_json, 1);
 
 
+    $database_collection_info = $dbjson->getCollectionInfo($dbjson->collection_dir);
 
-$test_dbjson = new Test_DBjson;
-
-$dummy_template = file_get_contents('templates/json/dummydata.json') . PHP_EOL;
-$dummy_object = json_decode($dummy_template);
-
-echo $dummy_template;
-Helper::print_pre($dummy_object);
-
-for ($i = 0; $i < 1; $i++) {
-    $dummy_objects_array[] = $dummy_object;
-}
-
-//Helper::print_pre($dummy_objects_array);
-
-$dummy_json = json_encode($dummy_objects_array);
-$insert_dummy_json = $test_dbjson->insert_test_data($dbjson, $dummy_json, 1000);
-
-
-$database_collection_info = $dbjson->getCollectionInfo($dbjson->collection_dir);
-
-echo '<br>Inserted: ' . Helper::getNiceFileSize($insert_dummy_json['size']) . ' into collection';
-echo '<br>' . $insert_dummy_json['documents'] . ' new documents added to collection';
-echo '<br><br>';
-echo '<br>Total documents in collection: ' . $database_collection_info['info']['count'];
-echo '<br>Active collection size: ' . Helper::getNiceFileSize($dbjson->getCollectionSize($dbjson->collection_dir));
-echo '<br><br>';
-echo '<br>All collections size: ' . Helper::getNiceFileSize($dbjson->getAllCollectionsSize($dbjson->database_dir));
+    echo '<br>Inserted: ' . Helper::getNiceFileSize($insert_dummy_json['size']) . ' into collection';
+    echo '<br>' . $insert_dummy_json['documents'] . ' new documents added to collection';
+    echo '<br><br>';
+    echo '<br>Total documents in collection: ' . $database_collection_info['info']['count'];
+    echo '<br>Active collection size: ' . Helper::getNiceFileSize($dbjson->getCollectionSize($dbjson->collection_dir));
+    echo '<br><br>';
+    echo '<br>All collections size: ' . Helper::getNiceFileSize($dbjson->getAllCollectionsSize($dbjson->database_dir));
 
 //Helper::print_pre($database_insert_array);
 //$dbjson->insertDocument($lorum_content_json);
 
-$document_json_contact = $dbjson->getDocument('0.49655700 14825433211482543321585dd0d9793b89.91249133');
-$document_object = json_decode($document_json_contact);
+    $document_json_contact = $dbjson->getDocument('0.86590400 1482645338585f5f5ad36787.38493967');
+    $document_object = json_decode($document_json_contact);
 //echo $document_json_contact;
 //Helper::print_pre($document_object);
-echo '<p>';
-echo '<br>Firstname: ' . $document_object[0]->firstname;
-echo '<br>Lastname: ' . $document_object[0]->lastname;
-echo '<br>Street: ' . $document_object[0]->adress->street;
-echo '<br>Postcode: ' . $document_object[0]->adress->postcode;
-echo '<br>State: ' . $document_object[0]->adress->state;
-echo '<br>Country: ' . $document_object[0]->adress->country;
-echo '</p>';
+    echo '<p>';
+    echo '<br>Firstname: ' . $document_object[0]->firstname;
+    echo '<br>Lastname: ' . $document_object[0]->lastname;
+    echo '<br>Street: ' . $document_object[0]->adress->street;
+    echo '<br>Postcode: ' . $document_object[0]->adress->postcode;
+    echo '<br>State: ' . $document_object[0]->adress->state;
+    echo '<br>Country: ' . $document_object[0]->adress->country;
+    echo '</p>';
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
-
-Helper::print_pre($dbjson->debug);
 //$collection_array = $dbjson->getCollection();
 //Helper::print_pre($collection_array);
 //$collection_files = $dbjson->getCollection('list_array');
