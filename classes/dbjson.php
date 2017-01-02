@@ -1,8 +1,13 @@
 <?php
 
+namespace Classes\DBjson;
+
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+//use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Illuminate\Filesystem\Filesystem as IFS;
+use Helper;
+use \Interfaces\DBjsonIntercafe\DBjsonInterface;
 
 class DBjson {
 
@@ -10,103 +15,152 @@ class DBjson {
     public $dbjson_dir;
     public $database_dir;
     public $collection_dir;
-    //public $document_id;
+    public $database_name;
+    public $collection_name;
+    public $document_id;
+    public $index_name = 'index.json';
+    public $chown = 'http';
+    public $chgrp = 'http';
     public $debug = array();
 
-    public function __construct() {
-        $this->config = $config;
+    public function __construct($dbjson_dir) {
+        $this->dbjson_dir = $dbjson_dir;
+        //$test = $this->installSomething('DBSomething');
     }
 
-    public function testFilesystem() {
-        $fs = new Filesystem();
-        try {
-            echo $fs->mkdir($file = 'dbdata/mydata/mycollection/' . mt_rand());
-            //$fs->remove($file);
-        } catch (IOExceptionInterface $e) {
-            echo 'An error occurred while creating your directory at ' . $e->getPath();
-        }
-    }
-
-    public function testFinder() {
-        $finder = new Finder();
-        $finder->files()->in(__DIR__);
-
-        //Helper::print_pre($finder);
-        foreach ($finder as $file) {
-            // Dump the absolute path
-            var_dump($file->getRealPath());
-
-            // Dump the relative path to the file, omitting the filename
-            var_dump($file->getRelativePath());
-
-            // Dump the relative path to the file
-            var_dump($file->getRelativePathname());
-        }
-    }
-
+    /**
+     * [install description]
+     * @param  [type] $dbjson_dir [description]
+     * @return [type]             [description]
+     */
     public function install($dbjson_dir) {
         $this->dbjson_dir = $dbjson_dir;
-        if (!file_exists($this->dbjson_dir)) {
-            if (!mkdir($this->dbjson_dir, 0777, true)) {
+        $fs = new IFS;
+
+
+        if (!$fs->isDirectory($this->dbjson_dir)) {
+            if (!$fs->makeDirectory($this->dbjson_dir, 0777, true)) {
                 $this->debug['fail']['filesystem']['create']['directory'][] = $this->dbjson_dir;
             } else {
                 $this->debug['success']['filesystem']['create']['directory'][] = $this->dbjson_dir;
+                if ($fs->isWritable($this->dbjson_dir)) {
+                    Helper::print_pre($fs->chmod($this->dbjson_dir, 0777));
+                }
+
+                //$filesystem->chown($this->dbjson_dir, $this->chown);
+                //$filesystem->chgrp($this->dbjson_dir, $this->chgrp);
+                //$filesystem->chmod($this->dbjson_dir, '777');
             }
         } else {
             $this->debug['warning']['filesystem']['duplicate']['directory'][] = $this->dbjson_dir;
         }
     }
 
+    /**
+     * [Creates the database directory]
+     * @param  [type] $database_name [Name of the database]
+     */
     public function createDB($database_name) {
+        $this->database_name = $database_name;
         $this->database_dir = $this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name;
+
         $filesystem = new Filesystem;
 
-        if (!file_exists($this->database_dir)) {
-            throw new Exception('Error at line:');
-            if (!$filesystem->mkdir($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name, 0777)) {
-                $this->debug['fail']['database']['write_error'][] = $database_name;
+        if (!$filesystem->exists($this->database_dir)) {
+            if ($filesystem->mkdir($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name, 0777)) {
+                $this->debug['fail']['database']['directory']['write_error'][] = $database_name;
             } else {
-                $this->debug['success']['database']['create'][] = $database_name;
+                $this->debug['success']['database']['create']['directory'][] = $database_name;
+                //$filesystem->chown($this->database_dir, $this->chown);
+                //$filesystem->chgrp($this->database_dir, $this->chgrp);
             }
         } else {
-            $this->debug['warning']['database']['duplicate'][] = $database_name;
+            $this->debug['warning']['database']['duplicate']['directory'][] = $database_name;
+            //throw new Exception('Database: ' . $database_name . ' already exist');
         }
     }
 
     public function dropDB($database_name) {
         if (is_dir($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name)) {
             if (!Helper::rmdir_recursive($this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name)) {
-                $this->debug['fail']['database']['drop'][] = $database_name;
+                $this->debug['fail']['database']['drop']['directory'][] = $database_name;
             } else {
-                $this->debug['success']['database']['drop'][] = $database_name;
+                $this->debug['success']['database']['drop']['directory'][] = $database_name;
             }
         } else {
-            $this->debug['warning']['database']['not_found'][] = $database_name;
+            $this->debug['warning']['database']['not_found']['directory'][] = $database_name;
         }
     }
 
+    public function setDB($database_name) {
+        $this->database_dir = $this->dbjson_dir . DIRECTORY_SEPARATOR . $database_name;
+    }
+
     public function newCollection($collection_name) {
+        $this->collection_name = $collection_name;
         $this->collection_dir = $this->database_dir . DIRECTORY_SEPARATOR . $collection_name;
+
+        $filesystem = new Filesystem;
+
         if (!file_exists($this->collection_dir)) {
-            if (!mkdir($this->collection_dir, 0777, true)) {
-                $this->debug['fail']['collection']['write_error'][] = $collection_name;
+            if ($filesystem->mkdir($this->collection_dir, 0777, true)) {
+                $this->debug['fail']['collection']['write_error']['directory'][] = $collection_name;
             } else {
-                $this->debug['success']['collection']['create'][] = $collection_name;
+                $this->debug['success']['collection']['create']['directory'][] = $collection_name;
+                //$filesystem->chown($this->collection_dir, $this->chown);
+                //$filesystem->chgrp($this->collection_dir, $this->chgrp);
             }
         } else {
-            $this->debug['warning']['collection']['duplicate'][] = $collection_name;
+            $this->debug['warning']['collection']['duplicate']['directory'][] = $collection_name;
         }
     }
 
     public function removeCollection($collection_name) {
         if (is_dir($this->database_dir . DIRECTORY_SEPARATOR . $collection_name)) {
             if (!Helper::rmdir_recursive($this->database_dir . DIRECTORY_SEPARATOR . $collection_name)) {
-                $this->debug['fail']['collection']['remove'][] = $collection_name;
+                $this->debug['fail']['collection']['remove']['directory'][] = $collection_name;
             } else {
-                $this->debug['success']['collection']['remove'][] = $collection_name;
+                $this->debug['success']['collection']['remove']['directory'][] = $collection_name;
+                $filesystem->chown($this->document_id, $this->chown);
+                $filesystem->chgrp($this->document_id, $this->chgrp);
             }
         } else {
-            $this->debug['warning']['collection']['not_found'][] = $collection_name;
+            $this->debug['warning']['collection']['not_found']['directory'][] = $collection_name;
+        }
+    }
+
+    public function setCollection($collection_name) {
+        $this->collection_dir = $this->database_dir . DIRECTORY_SEPARATOR . $collection_name;
+    }
+
+    public function getIndexObject() {
+        $fs = new IFS;
+
+        $index_file_path = $this->database_dir . DIRECTORY_SEPARATOR . $this->collection_name . '_' . $this->index_name;
+        echo $index_file_path;
+        if ($fs->isFile($index_file_path)) {
+            return json_decode($fs->get($index_file_path));
+        }
+    }
+
+    public function getLastIndexID() {
+        $index_object = $this->getIndexObject();
+        //var_dump($index_object);
+    }
+
+    public function updateIndex($document_id) {
+        $fs = new \Illuminate\Filesystem\Filesystem;
+        $index_file_path = $this->database_dir . DIRECTORY_SEPARATOR . $this->collection_name . '_' . $this->index_name;
+
+        $index_last = array_last($index_array);
+
+        $last_index_id = $this->getLastIndexID();
+        $index_array[$last_index_id] = $document_id;
+        $index_json = json_encode($index_array, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT);
+        if ($fs->isFile($index_file_path)) {
+            $fs->append($this->database_dir . DIRECTORY_SEPARATOR . $this->collection_name . '_' . $this->index_name, $index_json);
+        } else {
+            $fs->put($index_file_path, $index_json);
         }
     }
 
@@ -125,7 +179,7 @@ class DBjson {
                 $this->debug['fail']['document']['write_error'][] = $document_id;
             } else {
                 $this->debug['success']['document']['unique'][] = $document_id;
-                //return $filesize;
+                $this->updateIndex($document_id);
             }
         } else {
             $this->debug['warning']['document']['duplicate'][] = $document_id;
@@ -134,8 +188,10 @@ class DBjson {
 
 
         $insert_info = array(
+            'size' => $filesize,
+            'last' => $document_id
         );
-        return $document_id;
+        return $insert_info;
     }
 
     public function deleteDocument($document_id) {

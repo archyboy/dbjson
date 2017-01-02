@@ -1,6 +1,10 @@
 {
     "require": {
         "symfony/finder": "^3.2",
-        "symfony/filesystem": "^3.2"
+        "symfony/filesystem": "^3.2",
+        "illuminate/contracts": "dev-master",
+        "illuminate/support": "dev-master",
+        "illuminate/filesystem": "dev-master",
+        "archyboy/dbjson": "dev-master"
     }
 }
