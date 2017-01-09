@@ -7,10 +7,13 @@ use Symfony\Component\Filesystem\Filesystem;
 //use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Illuminate\Filesystem\Filesystem as IFS;
 use Helper;
-use \Interfaces\DBjsonIntercafe\DBjsonInterface;
+use Process;
 
+
+/**
+ * @author archy
+ */
 class DBjson {
-
     public $config;
     public $dbjson_dir;
     public $database_dir;
@@ -23,18 +26,29 @@ class DBjson {
     public $chgrp = 'http';
     public $debug = array();
 
-    public function __construct($dbjson_dir) {
+
+    public function __construct(String $dbjson_dir) {
         $this->dbjson_dir = $dbjson_dir;
         //$test = $this->installSomething('DBSomething');
     }
 
     /**
-     * [install description]
-     * @param  [type] $dbjson_dir [description]
-     * @return [type]             [description]
+     * Testing some simple PHPDoc stuff
+     *
+     * @param int $one
+     * @param int $two
+     * @param int $three
+     *
+     * @return array
      */
-    public function install($dbjson_dir) {
-        $this->dbjson_dir = $dbjson_dir;
+    public function testme(int $one, int $two, int $three) {
+    	return array($one, $two, $three);
+    }
+
+    public function install(string $dbjson_dir = null) {
+    	if($dbjson_dir) {
+    		$this->dbjson_dir = $dbjson_dir;
+    	}
         $fs = new IFS;
 
 
@@ -46,10 +60,6 @@ class DBjson {
                 if ($fs->isWritable($this->dbjson_dir)) {
                     Helper::print_pre($fs->chmod($this->dbjson_dir, 0777));
                 }
-
-                //$filesystem->chown($this->dbjson_dir, $this->chown);
-                //$filesystem->chgrp($this->dbjson_dir, $this->chgrp);
-                //$filesystem->chmod($this->dbjson_dir, '777');
             }
         } else {
             $this->debug['warning']['filesystem']['duplicate']['directory'][] = $this->dbjson_dir;
@@ -137,26 +147,31 @@ class DBjson {
         $fs = new IFS;
 
         $index_file_path = $this->database_dir . DIRECTORY_SEPARATOR . $this->collection_name . '_' . $this->index_name;
-        echo $index_file_path;
+        //echo $index_file_path;
         if ($fs->isFile($index_file_path)) {
-            return json_decode($fs->get($index_file_path));
+            return file_get_contents($index_file_path);
+        } else {
+            echo '<br>json file not found!';
         }
+
     }
 
     public function getLastIndexID() {
-        $index_object = $this->getIndexObject();
+        $index_object = json_decode($this->getIndexObject());
+        //$index_last = array_last((array)$index_object);
         //var_dump($index_object);
+        //echo $index_object;
+        \Helper::print_pre($index_object);
     }
 
     public function updateIndex($document_id) {
         $fs = new \Illuminate\Filesystem\Filesystem;
         $index_file_path = $this->database_dir . DIRECTORY_SEPARATOR . $this->collection_name . '_' . $this->index_name;
 
-        $index_last = array_last($index_array);
-
         $last_index_id = $this->getLastIndexID();
-        $index_array[$last_index_id] = $document_id;
-        $index_json = json_encode($index_array, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT);
+        $index_array[] = $document_id;
+        //echo $index_array;
+        $index_json = json_encode($index_array, JSON_PRETTY_PRINT);
         if ($fs->isFile($index_file_path)) {
             $fs->append($this->database_dir . DIRECTORY_SEPARATOR . $this->collection_name . '_' . $this->index_name, $index_json);
         } else {
@@ -180,6 +195,9 @@ class DBjson {
             } else {
                 $this->debug['success']['document']['unique'][] = $document_id;
                 $this->updateIndex($document_id);
+                //$index_object = $this->getIndexObject();
+                //echo 'INDEX_OBJECT';
+                //Helper::print_pre($index_object);
             }
         } else {
             $this->debug['warning']['document']['duplicate'][] = $document_id;

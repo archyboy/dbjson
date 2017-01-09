@@ -7,29 +7,30 @@ spl_autoload_register();
 
 
 
+
 require_once 'interfaces/dbjson.php';
-require_once 'classes/dbjson.php';
-require_once 'classes/test_dbjson.php';
+//require_once 'classes/dbjson.php';
+//require_once 'classes/test_dbjson.php';
 require_once 'vendor/autoload.php';
+
 
 use Illuminate\Filesystem\Filesystem as SomeFS;
 use Symfony\Component\Finder\Finder;
 use Classes\DBjson\DBjson;
 use Classes\Test_DBjson\Test_DBjson;
 
+
 ini_set('max_execution_time', 1800); //300 seconds = 5 minutes
 
-$dbjson = new Classes\DBjson\DBjson($dbjson_dir);
+$dbjson = new DBjson('dbdata');
 $dbjson->chgrp = 'archy';
 $dbjson->chown = 'archy';
-
-
+$dbjson->
 $fs = new SomeFS;
-
 
 try {
 
-    $dbjson->install('dbdata');
+    $dbjson->install();
     $dbjson->createDB('mydatabase');
     $dbjson->newCollection('mycollection');
 //    $dbjson->newCollection('mycollection3');
@@ -52,17 +53,15 @@ try {
 //
 // Setting up a test environment
 
-Helper::print_pre($dbjson->debug);
+
 //die();
 $test_dbjson = new Test_DBjson('dbdata');
 
 $dummy_template = file_get_contents('templates/json/dummydata.json') . PHP_EOL;
 $dummy_object = json_decode($dummy_template);
 
-echo $dummy_template;
-Helper::print_pre($dummy_object);
 
-for ($i = 0; $i < 5; $i++) {
+for ($i = 0; $i < 50000; $i++) {
     $dummy_objects_array[] = $dummy_object;
 }
 
@@ -70,21 +69,25 @@ for ($i = 0; $i < 5; $i++) {
 
 $time_start = microtime(true);
 $dummy_json = json_encode($dummy_objects_array);
-$insert_dummy_json = $test_dbjson->insert_test_data($dbjson, $dummy_json, 3000);
+$insert_dummy_json = $test_dbjson->insert_test_data($dbjson, $dummy_json, 30000000);
 $database_collection_info = $dbjson->getCollectionInfo($dbjson->collection_dir);
 
 $time_finish = microtime(true);
 $time_total = ($time_finish - $time_start) / 60;
-echo '<br>Insert time: ' . number_format($time_total, 2) . ' minutes';
 
-
+echo '<br>Insert time: ' . number_format($time_total, 5) . ' minutes';
 echo '<br>Inserted: ' . Helper::getNiceFileSize($insert_dummy_json['size']) . ' into collection';
 echo '<br>' . $insert_dummy_json['last'] . ' new documents added to collection';
-echo '<br><br>';
+echo '<br>';
 echo '<br>Total documents in collection: ' . $database_collection_info['info']['count'];
 echo '<br>Active collection size: ' . Helper::getNiceFileSize($dbjson->getCollectionSize($dbjson->collection_dir));
-echo '<br><br>';
+echo '<br>';
 echo '<br>All collections size: ' . Helper::getNiceFileSize($dbjson->getAllCollectionsSize($dbjson->database_dir));
+
+
+echo '<br><br>';
+//echo $dummy_template;
+//Helper::print_pre($dummy_object);
 
 //Helper::print_pre($database_insert_array);
 //$dbjson->insertDocument($lorum_content_json);
@@ -115,4 +118,5 @@ echo '</p>';
 //Helper::print_pre($lorum_content);
 //Helper::print_pre($dbjson);
 
-Helper::print_pre($dbjson);
+//Helper::print_pre($dbjson);
+//Helper::print_pre($dbjson->debug);
