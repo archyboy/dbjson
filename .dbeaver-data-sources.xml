@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="mariaDB-159623a1726-7db04b0a82ee4ab8" provider="mysql" driver="mariaDB" name="MariaDB - localhost" create-date="1483411804484" update-date="1483413074580" login-date="1483412946334" save-password="true" show-system-objects="true" read-only="false">
+		<connection host="localhost" port="3306" server="" database="hashpay" url="jdbc:mysql://localhost:3306/hashpay" user="archy" password="Cx4eOiGi" home="/usr" type="dev">
+			<event type="BEFORE_CONNECT" enabled="false" show-panel="false" wait-process="false" terminate-at-disconnect="false"></event>
+			<network-handler type="CONFIG" id="mysql_ssl" enabled="false" user="" save-password="false">
+				<property name="ssl.public.key.retrieve" value="false"/>
+				<property name="ssl.verify.server" value="true"/>
+				<property name="ssl.require" value="false"/>
+			</network-handler>
+			<network-handler type="TUNNEL" id="ssh_tunnel" enabled="true" user="archy" save-password="true" password="Cx4eOiGi">
+				<property name="sshConnectTimeout" value="10000"/>
+				<property name="port" value="22"/>
+				<property name="host" value="localhost"/>
+				<property name="authType" value="PASSWORD"/>
+			</network-handler>
+			<network-handler type="PROXY" id="socks_proxy" enabled="false" user="" save-password="false">
+				<property name="socks-port" value="1080"/>
+			</network-handler>
+		</connection>
+	</data-source>
+</data-sources>

@@ -5,27 +5,22 @@ spl_autoload($class);
 spl_autoload_extensions('.php');
 spl_autoload_register();
 
-
-
-
 require_once 'interfaces/dbjson.php';
-//require_once 'classes/dbjson.php';
-//require_once 'classes/test_dbjson.php';
+require_once 'classes/dbjson.php';
+require_once 'classes/test_dbjson.php';
 require_once 'vendor/autoload.php';
-
 
 use Illuminate\Filesystem\Filesystem as SomeFS;
 use Symfony\Component\Finder\Finder;
 use Classes\DBjson\DBjson;
 use Classes\Test_DBjson\Test_DBjson;
 
-
 ini_set('max_execution_time', 1800); //300 seconds = 5 minutes
 
 $dbjson = new DBjson('dbdata');
 $dbjson->chgrp = 'archy';
 $dbjson->chown = 'archy';
-$dbjson->
+
 $fs = new SomeFS;
 
 try {
