@@ -31,9 +31,7 @@ $dbjson = new DBEngine($connector);
 // ------------------------------------------- Start builder init ----------------------------------------
 $builder = new Builder($connector);
 
-
-Kint::dump($builder); // Debugging the $builder object
-
+Kint::dump($builder); // Debugging the $builder object!!
 // ------------------------------------------- Start builder query ----------------------------------------
 // Query data
 $json_query = '{
