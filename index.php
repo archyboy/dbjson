@@ -22,15 +22,14 @@ $json_connect = '{
   "password" : "xxxxx",
   "database" : "mydatabase"
 }';
-
 // New instance of Connector
 $connector = new Connector($json_connect);
-
+$dbjson = new DBEngine($connector);
 
 // ------------------------------------------- Start builder init ----------------------------------------
 $builder = new Builder($connector);
 
-
+Kint::dump($builder);
 // ------------------------------------------- Start builder query ----------------------------------------
 // Query data
 $json_query = '{

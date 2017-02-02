@@ -23,10 +23,6 @@ class ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d
             'Illuminate\\Filesystem\\' => 22,
             'Illuminate\\Contracts\\' => 21,
         ),
-        'D' => 
-        array (
-            'DBjson\\' => 7,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -54,10 +50,10 @@ class ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d
         array (
             0 => __DIR__ . '/..' . '/illuminate/contracts',
         ),
-        'DBjson\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/classes',
-        ),
+    );
+
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/../..' . '/classes',
     );
 
     public static $prefixesPsr0 = array (
@@ -75,6 +71,7 @@ class ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit61b4fb06735c7d3eff00ea5a5430877d::$prefixesPsr0;
 
         }, null, ClassLoader::class);

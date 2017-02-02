@@ -20,9 +20,8 @@
     },
     "autoload": {
         "psr-4": {
-            "DBjson\\": "classes/",
+            "": "classes/",
             "Interfaces\\": "interfaces/"
-
         }
     },
     "license": "GNU",

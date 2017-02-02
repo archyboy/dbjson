@@ -12,5 +12,5 @@ return array(
     'Illuminate\\Support\\' => array($vendorDir . '/illuminate/support'),
     'Illuminate\\Filesystem\\' => array($vendorDir . '/illuminate/filesystem'),
     'Illuminate\\Contracts\\' => array($vendorDir . '/illuminate/contracts'),
-    'DBjson\\' => array($baseDir . '/classes'),
+    '' => array($baseDir . '/classes'),
 );
