@@ -4,7 +4,7 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 require '../../3rdparty/kint/Kint.class.php';
-require 'classes/helper.php';
+require 'classes/Helper.php';
 
 use DBjson\Connector\Connector as Connector;
 use DBjson\DBEngine\DBEngine as DBEngine;
@@ -31,7 +31,7 @@ $dbjson = new DBEngine($connector);
 // ------------------------------------------- Start builder init ----------------------------------------
 $builder = new Builder($connector);
 
-Kint::dump($builder); 
+Kint::dump($builder);
 // ------------------------------------------- Start builder query ----------------------------------------
 // Query data
 $json_query = '{
