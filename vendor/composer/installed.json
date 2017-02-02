@@ -1,30 +1,30 @@
 [
     {
         "name": "symfony/finder",
-        "version": "v3.2.0",
-        "version_normalized": "3.2.0.0",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/finder.git",
-            "reference": "4263e35a1e342a0f195c9349c0dee38148f8a14f"
+            "reference": "791ac099b1687c0bd82f7230ec0d8fc8550c81dc"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/4263e35a1e342a0f195c9349c0dee38148f8a14f",
-            "reference": "4263e35a1e342a0f195c9349c0dee38148f8a14f",
+            "url": "https://api.github.com/repos/symfony/finder/zipball/791ac099b1687c0bd82f7230ec0d8fc8550c81dc",
+            "reference": "791ac099b1687c0bd82f7230ec0d8fc8550c81dc",
             "shasum": ""
         },
         "require": {
             "php": ">=5.5.9"
         },
-        "time": "2016-11-03 08:11:03",
+        "time": "2017-01-02T20:33:09+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.2-dev"
+                "dev-master": "3.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Finder\\": ""
@@ -52,30 +52,30 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v3.2.0",
-        "version_normalized": "3.2.0.0",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "8d4cf7561a5b17e5eb7a02b80d0b8f014a3796d4"
+            "reference": "b2de62936fea037d501159f52b7b6172cc962282"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/8d4cf7561a5b17e5eb7a02b80d0b8f014a3796d4",
-            "reference": "8d4cf7561a5b17e5eb7a02b80d0b8f014a3796d4",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/b2de62936fea037d501159f52b7b6172cc962282",
+            "reference": "b2de62936fea037d501159f52b7b6172cc962282",
             "shasum": ""
         },
         "require": {
             "php": ">=5.5.9"
         },
-        "time": "2016-11-24 00:46:43",
+        "time": "2017-01-08T21:15:04+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.2-dev"
+                "dev-master": "3.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Filesystem\\": ""
@@ -108,22 +108,22 @@
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/contracts.git",
-            "reference": "e20fdfb8caaa223b9d89a8dd938ab9a8b7bb7a70"
+            "reference": "9b7b35b839a6bfb016dfe04ca2c291e53680a7d5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/illuminate/contracts/zipball/e20fdfb8caaa223b9d89a8dd938ab9a8b7bb7a70",
-            "reference": "e20fdfb8caaa223b9d89a8dd938ab9a8b7bb7a70",
+            "url": "https://api.github.com/repos/illuminate/contracts/zipball/9b7b35b839a6bfb016dfe04ca2c291e53680a7d5",
+            "reference": "9b7b35b839a6bfb016dfe04ca2c291e53680a7d5",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.6.4"
+            "php": ">=7.0"
         },
-        "time": "2016-12-29 16:21:00",
+        "time": "2017-01-20T14:17:30+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "5.4-dev"
+                "dev-master": "5.5-dev"
             }
         },
         "installation-source": "source",
@@ -146,68 +146,18 @@
         "homepage": "https://laravel.com"
     },
     {
-        "name": "paragonie/random_compat",
-        "version": "v2.0.4",
-        "version_normalized": "2.0.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/paragonie/random_compat.git",
-            "reference": "a9b97968bcde1c4de2a5ec6cbd06a0f6c919b46e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/a9b97968bcde1c4de2a5ec6cbd06a0f6c919b46e",
-            "reference": "a9b97968bcde1c4de2a5ec6cbd06a0f6c919b46e",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.*|5.*"
-        },
-        "suggest": {
-            "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-        },
-        "time": "2016-11-07 23:38:38",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "lib/random.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Paragon Initiative Enterprises",
-                "email": "security@paragonie.com",
-                "homepage": "https://paragonie.com"
-            }
-        ],
-        "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-        "keywords": [
-            "csprng",
-            "pseudorandom",
-            "random"
-        ]
-    },
-    {
         "name": "doctrine/inflector",
-        "version": "v1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/inflector.git",
-            "reference": "90b2128806bfde671b6952ab8bea493942c1fdae"
+            "reference": "803a2ed9fea02f9ca47cd45395089fe78769a392"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/inflector/zipball/90b2128806bfde671b6952ab8bea493942c1fdae",
-            "reference": "90b2128806bfde671b6952ab8bea493942c1fdae",
+            "url": "https://api.github.com/repos/doctrine/inflector/zipball/803a2ed9fea02f9ca47cd45395089fe78769a392",
+            "reference": "803a2ed9fea02f9ca47cd45395089fe78769a392",
             "shasum": ""
         },
         "require": {
@@ -216,14 +166,14 @@
         "require-dev": {
             "phpunit/phpunit": "4.*"
         },
-        "time": "2015-11-06 14:35:42",
+        "time": "2016-05-12T17:23:41+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.1.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Doctrine\\Common\\Inflector\\": "lib/"
@@ -271,20 +221,19 @@
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/support.git",
-            "reference": "47a4981eeedb48bdc797ed798480424c4b5a4a62"
+            "reference": "e1f5e53743f141a2e59dca979f1d4b1d91534c52"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/illuminate/support/zipball/47a4981eeedb48bdc797ed798480424c4b5a4a62",
-            "reference": "47a4981eeedb48bdc797ed798480424c4b5a4a62",
+            "url": "https://api.github.com/repos/illuminate/support/zipball/e1f5e53743f141a2e59dca979f1d4b1d91534c52",
+            "reference": "e1f5e53743f141a2e59dca979f1d4b1d91534c52",
             "shasum": ""
         },
         "require": {
             "doctrine/inflector": "~1.0",
             "ext-mbstring": "*",
-            "illuminate/contracts": "5.4.*",
-            "paragonie/random_compat": "~1.4|~2.0",
-            "php": ">=5.6.4"
+            "illuminate/contracts": "5.5.*",
+            "php": ">=7.0"
         },
         "replace": {
             "tightenco/collect": "self.version"
@@ -294,11 +243,11 @@
             "symfony/process": "Required to use the composer class (~3.2).",
             "symfony/var-dumper": "Required to use the dd function (~3.2)."
         },
-        "time": "2016-12-27 17:31:39",
+        "time": "2017-01-30T22:05:16+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "5.4-dev"
+                "dev-master": "5.5-dev"
             }
         },
         "installation-source": "source",
@@ -330,18 +279,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/filesystem.git",
-            "reference": "01b8c512a70d3a59e09668adaffb0c3f8fef4300"
+            "reference": "8895af0fec47f9ed2ca2cd9b21ff8a96e5bbba0c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/illuminate/filesystem/zipball/01b8c512a70d3a59e09668adaffb0c3f8fef4300",
-            "reference": "01b8c512a70d3a59e09668adaffb0c3f8fef4300",
+            "url": "https://api.github.com/repos/illuminate/filesystem/zipball/8895af0fec47f9ed2ca2cd9b21ff8a96e5bbba0c",
+            "reference": "8895af0fec47f9ed2ca2cd9b21ff8a96e5bbba0c",
             "shasum": ""
         },
         "require": {
-            "illuminate/contracts": "5.4.*",
-            "illuminate/support": "5.4.*",
-            "php": ">=5.6.4",
+            "illuminate/contracts": "5.5.*",
+            "illuminate/support": "5.5.*",
+            "php": ">=7.0",
             "symfony/finder": "~3.2"
         },
         "suggest": {
@@ -349,11 +298,11 @@
             "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (~1.0).",
             "league/flysystem-rackspace": "Required to use the Flysystem Rackspace driver (~1.0)."
         },
-        "time": "2016-12-28 21:13:30",
+        "time": "2017-01-04T19:49:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "5.4-dev"
+                "dev-master": "5.5-dev"
             }
         },
         "installation-source": "source",
