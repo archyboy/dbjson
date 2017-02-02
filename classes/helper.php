@@ -1,5 +1,7 @@
 <?php
 
+namespace DBjson\Helper;
+
 class Helper {
 
     public static function print_pre($data) {
