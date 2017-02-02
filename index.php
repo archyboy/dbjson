@@ -15,6 +15,7 @@ use Symfony\Component\Finder\Finder;
 ini_set('max_execution_time', 1800); //300 seconds = 5 minutes
 
 
+try {
 // ------------------------------------------- Start connecting  ----------------------------------------
 // Connection data
 $json_connect = '{
@@ -25,6 +26,7 @@ $json_connect = '{
 // New instance of Connector
 $connector = new Connector($json_connect);
 $dbjson = new DBEngine($connector);
+
 
 // ------------------------------------------- Start builder init ----------------------------------------
 $builder = new Builder($connector);
@@ -45,7 +47,7 @@ $dbjson = $builder->getDatabase();
 
 //$dbjson = new DBjson($connector);
 
-try {
+
 // ------------------------------------------- Start install root data directory ----------------------------------------
     //$dbjson->install('mydata');
 

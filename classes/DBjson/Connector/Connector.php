@@ -2,6 +2,8 @@
 
 namespace DBjson\Connector;
 
+use Exception;
+
 class Connector {
   private $username;
   private $password;

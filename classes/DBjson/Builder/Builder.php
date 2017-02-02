@@ -2,10 +2,10 @@
 
 namespace DBjson\Builder;
 
-use DBjson\DBEngine\DBEngine as DBjson;
+use DBjson\DBEngine\DBEngine as DBEngine;
 use DBjson\Connector\Connector as Connector;
 
-class Builder extends DBjson {
+class Builder extends DBEngine {
   protected $connector;
   protected $database;
 
@@ -13,7 +13,7 @@ class Builder extends DBjson {
   public function __construct(Connector $connector) {
     if($connector->connect()) {
       $this->connector = $connector;
-      $this->database = new DBjson($connector);
+      $this->database = new DBEngine($connector);
     }
   }
 

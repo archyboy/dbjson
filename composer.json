@@ -1,6 +1,6 @@
 {
     "name": "archy/dbjson",
-    "description": "Tiny JSON and RESTfull database engine written in PHP",
+    "description": "A RESTfull PHP based document oriented database server with JSON syntax",
     "require": {
         "symfony/finder": "^3.2",
         "symfony/filesystem": "^3.2",
