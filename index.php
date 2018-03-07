@@ -26,7 +26,7 @@ $json_connect = '{
 // New instance of Connector
 $connector = new Connector($json_connect);
 $dbjson = new DBEngine($connector);
-
+$dbjson->dropDB($database_name);
 
 // ------------------------------------------- Start builder init ----------------------------------------
 $builder = new Builder($connector);
