@@ -19,7 +19,7 @@ try {
 // ------------------------------------------- Start connecting  ----------------------------------------
 // Connection data
 $json_connect = '{
-  "username" : "archyboy",
+  "username" : "username",
   "password" : "xxxxx",
   "database" : "mydatabase"
 }';
