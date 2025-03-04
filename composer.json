@@ -27,8 +27,8 @@
     "license": "GNU",
     "authors": [
         {
-            "name": "ArchyBoy",
-            "email": "archy@workmail.com"
+            "name": "Tester",
+            "email": "test@localhost.localdomain"
         }
     ],
     "minimum-stability": "stable"
